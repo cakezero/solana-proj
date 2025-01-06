@@ -6,8 +6,12 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.cookies.admin_cookie;
       if(!token) res.redirect('/admin/login');
+
+      const auth = JWT.verify(token);
+      if (!auth) res.redirect('/admin/login');
       next();
     } catch (error) {
+      res.redirect('/admin/login');
       logger.error(`Error auth middleware: ${error}`);
       next();
     }

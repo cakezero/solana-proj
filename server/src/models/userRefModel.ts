@@ -20,8 +20,8 @@ const userRefSchema = new mongoose.Schema({
     type: Number,
     default: 0,
   },
-  reffered: {
-    type: String,
+  referrer: {
+    type: String
   }
 });
 
