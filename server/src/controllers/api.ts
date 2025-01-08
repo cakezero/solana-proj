@@ -4,12 +4,12 @@ import logger from '../configs/logger';
 
 const refUser = (req: Request, res: Response) => {
   try {
-    const { walletAddress } = req.body;
+    const { walletAddress } = req.query;
 
-    const referrals = UserRef.findOne({ walletAddress });
-    if (!referrals) res.status(404).json({ error: 'User not found' });
+    const UserReferrals = UserRef.findOne({ walletAddress });
+    if (!UserReferrals) res.status(404).json({ message: 'User not found' });
 
-    res.status(200).json({ referrals });
+    res.status(200).json({ UserReferrals });
   } catch (error) {
     logger.error(`Error getting user referrals: ${error}`);
     res.status(500).json({ error: 'Internal Server Error' });
@@ -19,10 +19,11 @@ const refUser = (req: Request, res: Response) => {
 const refUserPost =  async (req: Request, res: Response) => {
   try {
     const { referrer } = req.body
+    req.body.refId = newRefId
 
     if (!referrer) {
-      const newRefer = new UserRef(req.body)
-      newRefer.save();
+      const newUser = new UserRef(req.body)
+      newUser.save();
       res.status(201).json({ message: 'User referred successfully' });
     }
 
@@ -30,9 +31,9 @@ const refUserPost =  async (req: Request, res: Response) => {
     user!.referrals += 1;
     user!.save();
 
-    const newRefer = new UserRef(req.body);
-    newRefer.save();
-    res.status(201).json({ message: 'User referred successfully' });
+    const newUser = new UserRef(req.body);
+    newUser.save();
+    res.status(201).json({ message: 'User referred successfully', newUser });
   } catch (error) {
     logger.error(`Error saving user referral info: ${error}`);
     res.status(500).json({ error: 'Internal Server Error' });
