@@ -1,9 +1,10 @@
 export interface User {
   username: string | undefined;
-  referrals: string | undefined;
+  referrals: number | undefined;
+  refId: string | undefined
 }
 
 export interface UserContextType {
   globalUser: User | undefined;
-  setGlobalUser: (user: User | null) => void
+  setGlobalUser: React.Dispatch<React.SetStateAction<User | undefined>>
 }

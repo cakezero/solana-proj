@@ -1,6 +1,7 @@
 import type { Request, Response } from 'express';
 import UserRef from '../models/userRefModel';
 import logger from '../configs/logger';
+import cryptoRandomString from "crypto-random-string"
 
 const refUser = (req: Request, res: Response) => {
   try {
@@ -18,13 +19,22 @@ const refUser = (req: Request, res: Response) => {
 
 const refUserPost =  async (req: Request, res: Response) => {
   try {
+    const newRefId = cryptoRandomString({ length: 6, type: 'alphanumeric' })
+    console.log({ newRefId })
     const { referrer } = req.body
     req.body.refId = newRefId
 
     if (!referrer) {
       const newUser = new UserRef(req.body)
       newUser.save();
-      res.status(201).json({ message: 'User referred successfully' });
+
+      const prop = {
+        username: newUser.username,
+        refId: newRefId,
+        referrals: newUser.referrals
+      }
+
+      res.status(201).json({ message: 'User referred successfully', prop });
     }
 
     const user = await UserRef.findOne({ refId: referrer });
@@ -33,7 +43,14 @@ const refUserPost =  async (req: Request, res: Response) => {
 
     const newUser = new UserRef(req.body);
     newUser.save();
-    res.status(201).json({ message: 'User referred successfully', newUser });
+
+    const prop = {
+      username: newUser.username,
+      refId: newRefId,
+      referrals: newUser.referrals
+    }
+    
+    res.status(201).json({ message: 'User referred successfully', prop });
   } catch (error) {
     logger.error(`Error saving user referral info: ${error}`);
     res.status(500).json({ error: 'Internal Server Error' });
