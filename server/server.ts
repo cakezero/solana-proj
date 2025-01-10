@@ -7,10 +7,13 @@ import logger from './src/configs/logger';
 import { checkUser } from './src/middlewares/requireAuth';
 import api from './src/routes/apiRoutes';
 import admin from './src/routes/adminRoutes';
+import path from 'path'
 
 const server = express();
 
 server.use(cors());
+server.set('views', path.join(__dirname, 'src', 'views'));
+server.set('view engine', 'ejs')
 server.use(cookieParser());
 server.use(express.json());
 server.use(express.urlencoded({ extended: false }));
