@@ -8,7 +8,7 @@ import { useUser } from '../providers/useUser';
 import { UserContextType } from '../types/types';
 import { Spinner, LoadingSpinner } from './LoadingSpinner'
 
-const API_ENDPOINT = "http://localhost:5050/api/ref";
+const API_ENDPOINT = "https://solana-proj.onrender.com/api/ref";
 
 function Login() {
   const [check, setCheck] = useState<boolean>(false);
