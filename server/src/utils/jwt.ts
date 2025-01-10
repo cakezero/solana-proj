@@ -3,16 +3,12 @@ import { JWT_SECRET } from './env';
 
 
 const JWT = {
-  sign: async(payload: string, options?: { expiresIn: string }) => {
-    const { expiresIn } = options ?? {};
-
-    const token = expiresIn ? 
-      jwt.sign(payload, JWT_SECRET, { expiresIn }) :
-      jwt.sign(payload, JWT_SECRET, { expiresIn: '1d' });
+  sign: (payload: string) => {
+    const token = jwt.sign(payload, JWT_SECRET)
     return token;
   },
 
-  verify: async(token: string) => {
+  verify: (token: string) => {
     const decodedToken = jwt.verify(token, JWT_SECRET);
     return decodedToken;
   }

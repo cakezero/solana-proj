@@ -5,7 +5,10 @@ import logger from '../configs/logger';
 const requireAuth = (req: Request, res: Response, next: NextFunction) => {
     try {
       const token = req.cookies.admin_cookie;
-      if(!token) res.redirect('/admin/login');
+      if (!token) {
+        res.redirect('/admin/login');
+        return;
+      }
 
       const auth = JWT.verify(token);
       if (!auth) res.redirect('/admin/login');
@@ -25,7 +28,8 @@ const checkUser = async (req: Request, res: Response, next: NextFunction) => {
       next();
       return;
     }
-    const decodedToken = await JWT.verify(token);
+    
+    const decodedToken = JWT.verify(token);
     res.locals.user = decodedToken;
     next();
   } catch (error) {
