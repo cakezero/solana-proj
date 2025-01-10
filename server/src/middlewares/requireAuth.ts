@@ -20,7 +20,11 @@ const requireAuth = (req: Request, res: Response, next: NextFunction) => {
 const checkUser = async (req: Request, res: Response, next: NextFunction) => {
   try {
     const token = req.cookies.admin_cookie;
-    if (!token) res.locals.user = null;
+    if (!token) {
+      res.locals.user = null
+      next();
+      return;
+    }
     const decodedToken = await JWT.verify(token);
     res.locals.user = decodedToken;
     next();

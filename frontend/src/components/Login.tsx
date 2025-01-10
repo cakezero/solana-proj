@@ -8,7 +8,7 @@ import { useUser } from '../providers/useUser';
 import { UserContextType } from '../types/types';
 import { Spinner, LoadingSpinner } from './LoadingSpinner'
 
-const API_ENDPOINT = 'http://localhost:5050/api/ref'
+const API_ENDPOINT = "http://localhost:5050/api/ref";
 
 function Login() {
   const [check, setCheck] = useState<boolean>(false);
@@ -34,7 +34,7 @@ function Login() {
     }
     setSubmit(true)
 
-    const response = await axios.get(`${API_ENDPOINT}/check-user?walletAddress=${walletAddress}`);
+    const response = await axios.get(`${API_ENDPOINT}/check-user?auth=${username}`);
 
     if (response.data?.UserReferrals) {
       toast.error('Username already exists')
@@ -51,6 +51,7 @@ function Login() {
 
     if (newResponse.data?.error) {
       toast.error("Error Logging you in! Try Again");
+      setSubmit(false)
       return;
     }
 
@@ -69,7 +70,9 @@ function Login() {
           setWalletAddress(publicKey?.toString())
           setCheck(true);
 
-          const response = await axios.get(`${API_ENDPOINT}/check-user?walletAddress=${walletAddress}`);
+          const response = await axios.get(
+            `${API_ENDPOINT}/check-user?auth=${walletAddress}`
+          );
 
           if(response.data?.error) {
             toast.error("Error Logging you in! Please try again later");
@@ -86,11 +89,12 @@ function Login() {
             return;
           }
 
-          setNewUser(true)
           setCheck(false)
+          setNewUser(true)
         } catch (error) {
           toast.error("Error Logging you in! Please try again later")
           console.log(error)
+          setCheck(false)
         }
       }
       checkUser()

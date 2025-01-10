@@ -3,12 +3,20 @@ import UserRef from '../models/userRefModel';
 import logger from '../configs/logger';
 import cryptoRandomString from "crypto-random-string"
 
-const refUser = (req: Request, res: Response) => {
+const refUser = async (req: Request, res: Response) => {
   try {
-    const { walletAddress } = req.query;
+    const { auth } = req.query;
 
-    const UserReferrals = UserRef.findOne({ walletAddress });
-    if (!UserReferrals) res.status(404).json({ message: 'User not found' });
+    console.log({auth})
+
+    const UserReferrals = await UserRef.findOne({
+      $or: [{ walletAddress: auth }, { username: auth }],
+    });
+    console.log({UserReferrals})
+    if (!UserReferrals) {
+      res.status(200).json({ message: 'User not found' })
+      return;
+    };
 
     res.status(200).json({ UserReferrals });
   } catch (error) {
@@ -35,6 +43,7 @@ const refUserPost =  async (req: Request, res: Response) => {
       }
 
       res.status(201).json({ message: 'User referred successfully', prop });
+      return;
     }
 
     const user = await UserRef.findOne({ refId: referrer });
@@ -49,7 +58,7 @@ const refUserPost =  async (req: Request, res: Response) => {
       refId: newRefId,
       referrals: newUser.referrals
     }
-    
+
     res.status(201).json({ message: 'User referred successfully', prop });
   } catch (error) {
     logger.error(`Error saving user referral info: ${error}`);
