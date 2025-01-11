@@ -77,20 +77,21 @@ function Login() {
           if(response.data?.error) {
             toast.error("Error Logging you in! Please try again later");
             console.log(response.data?.error)
-            await disconnect();
-            return;
+            return await disconnect();
           }
 
           if(response.data?.UserReferrals) {
             toast.success("User authenticated!")
             setGlobalUser(response.data.UserReferrals);
-            navigate('/dashboard');
             setCheck(false)
-            return;
+            return navigate('/dashboard');
           }
 
-          setCheck(false)
-          setNewUser(true)
+          if (!response) {
+            setCheck(false)
+            setNewUser(true)
+          }
+
         } catch (error) {
           toast.error("Error Logging you in! Please try again later")
           console.log(error)
