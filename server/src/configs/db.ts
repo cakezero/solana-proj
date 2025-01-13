@@ -12,7 +12,7 @@ const DB = async () => {
 			`\x1b[36m%s\x1b[0m`,
 			`DB: MongoDB Connected: ${conn.connection.host}`,
 		);
-	} catch (error) {
+	} catch (error: any) {
 		logger.error(
 			`\x1b[31m%s\x1b[0m`,
 			`DB: MongoDB Connection Failure: ${error.message}`,
