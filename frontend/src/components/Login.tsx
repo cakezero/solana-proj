@@ -69,28 +69,28 @@ function Login() {
         try {
           setWalletAddress(publicKey?.toString())
           setCheck(true);
+          console.log("eff", walletAddress)
 
-          const response = await axios.get(
+          const { data } = await axios.get(
             `${API_ENDPOINT}/check-user?auth=${walletAddress}`
           );
 
-          if(response.data?.error) {
+          if(data?.error) {
             toast.error("Error Logging you in! Please try again later");
-            console.log(response.data?.error)
+            console.log(data?.error)
             return await disconnect();
           }
 
-          if(response.data?.UserReferrals) {
-            toast.success("User authenticated!")
-            setGlobalUser(response.data.UserReferrals);
+          if (!data.UserReferrals) {
             setCheck(false)
-            return navigate('/dashboard');
+            setNewUser(true);
+            return;
           }
 
-          if (!response) {
-            setCheck(false)
-            setNewUser(true)
-          }
+          toast.success("User authenticated!")
+          setGlobalUser(data.UserReferrals);
+          setCheck(false)
+          return navigate('/dashboard');
 
         } catch (error) {
           toast.error("Error Logging you in! Please try again later")
